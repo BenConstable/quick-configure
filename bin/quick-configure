@@ -1,0 +1,13 @@
+#!/usr/bin/env php
+<?php
+
+include __DIR__ . '/../../../autoload.php';
+
+use QuickConfigure\Command\ConfigureCommand;
+use QuickConfigure\Command\ShowCommand;
+use Symfony\Component\Console\Application;
+
+$application = new Application();
+$application->add(new ConfigureCommand);
+$application->add(new ShowCommand);
+$application->run();

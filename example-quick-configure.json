@@ -1,0 +1,9 @@
+{
+    "a_field": {
+        "description": "This field is important, please set it"
+    },
+
+    "other_field": {
+        "description": "As is this one"
+    }
+}
