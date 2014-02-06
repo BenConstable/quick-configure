@@ -57,7 +57,7 @@ class Config {
         $pathsHelper->setGeneratedConfigFilePrefix($env ?: '');
 
         $this->utils = new UtilManager;
-        $this->utils->setPathsHelper($pathsHelper);
+        $this->utils->register('paths', $pathsHelper);
 
         $this->loadConfig();
     }
@@ -82,7 +82,7 @@ class Config {
     public function setEnv($env)
     {
         $this->env = $env;
-        $this->utils->getPathsHelper()->setGeneratedConfigFilePrefix($env);
+        $this->utils->get('paths')->setGeneratedConfigFilePrefix($env);
         $this->loadConfig();
         return $this;
     }
@@ -107,11 +107,11 @@ class Config {
         $this->config = json_decode(file_get_contents(
             $this
                 ->utils
-                ->getPathsHelper()
+                ->get('paths')
                 ->getGeneratedConfigDir() . '/' .
             $this
                 ->utils
-                ->getPathsHelper()
+                ->get('paths')
                 ->getGeneratedConfigFileName()
         ));
 

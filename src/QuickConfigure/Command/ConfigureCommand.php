@@ -1,5 +1,7 @@
 <?php namespace QuickConfigure\Command;
 
+use Exception;
+
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -39,7 +41,7 @@ class ConfigureCommand extends Command {
      */
     protected function configure()
     {
-        $file = $this->utils->getPathsHelper()->getConfigFileName();
+        $file = $this->utils->get('paths')->getConfigFileName();
 
         $this
             ->setName('configure')
@@ -71,48 +73,52 @@ class ConfigureCommand extends Command {
     {
         $output->writeln('');
 
-        $file       = $this->utils->getPathsHelper()->getConfigFileName();
+        $file       = $this->utils->get('paths')->getConfigFileName();
         $filePath   = ($input->getOption('path') ?: getcwd()) . '/' . $file;
         $dialog     = $this->getHelperSet()->get('dialog');
         $configured = array();
 
-        if (file_exists($filePath)) {
-            $output->writeln(
-                "<info>$file file found, configuring for " .
-                ($input->getOption('env') ?: 'global') .
-                " env...</info>"
+        if (!file_exists($filePath)) {
+            throw new Exception("No $file found at $filePath");
+        }
+
+        $output->writeln(
+            "<info>$file file found, configuring for " .
+            ($input->getOption('env') ?: 'global') .
+            " env...</info>"
+        );
+        $output->writeln('');
+
+        $config    = json_decode(file_get_contents($filePath));
+        $validator = new FormatValidator($config);
+
+        if (!$validator->validate()) {
+            throw new Exception("File invalid, with the following errors\n" .
+                implode("\n", $validator->getErrors())
+            );
+        }
+
+        $this
+            ->utils
+            ->get('paths')
+            ->setGeneratedConfigFilePrefix($input->getOption('env') ?: '');
+
+        $configured = array();
+        $genDir     = $this->utils->get('paths')->getGeneratedConfigDir();
+        $genFile    = $this->utils->get('paths')->getGeneratedConfigFileName();
+
+        foreach ($config as $key => $settings) {
+            $configured[$key] = $dialog->ask(
+                $output,
+                "    <comment>[$key] {$settings->description} :</comment> ",
+                isset($settings->default) ? $settings->default : null
             );
             $output->writeln('');
-
-            $config    = json_decode(file_get_contents($filePath));
-            $validator = new FormatValidator($config);
-
-            if ($validator->validate()) {
-                $this->utils->getPathsHelper()->setGeneratedConfigFilePrefix($input->getOption('env') ?: '');
-
-                $configured = array();
-                $genDir     = $this->utils->getPathsHelper()->getGeneratedConfigDir();
-                $genFile    = $this->utils->getPathsHelper()->getGeneratedConfigFileName();
-
-                foreach ($config as $key => $settings) {
-                    $configured[$key] = $dialog->ask(
-                        $output,
-                        "    <comment>[$key] {$settings->description} :</comment> ",
-                        isset($settings->default) ? $settings->default : null
-                    );
-                    $output->writeln('');
-                }
-
-                file_put_contents("{$genDir}/{$genFile}", json_encode($configured));
-
-                $output->writeln('<info>...configured!</info>');
-            } else {
-                $output->writeln('<error>' . implode("\n", $validator->getErrors()) . '</error>');
-            }
-
-            $output->writeln('');
-        } else {
-            $output->writeln("<error>$file file not found</error>");
         }
+
+        file_put_contents("{$genDir}/{$genFile}", json_encode($configured));
+
+        $output->writeln('<info>...configured!</info>');
+        $output->writeln('');
     }
 }

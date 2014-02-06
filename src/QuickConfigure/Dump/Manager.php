@@ -1,4 +1,4 @@
-<?php namespace QuickConfigure\Util;
+<?php namespace QuickConfigure\Dump;
 
 use QuickConfigure\Support\Manager as AbstractManager;
 
@@ -7,7 +7,7 @@ class Manager extends AbstractManager {
     /**
      * Constructor.
      *
-     * Register default utilities.
+     * Register default dumpers.
      *
      * @return void
      */
@@ -15,6 +15,7 @@ class Manager extends AbstractManager {
     {
         parent::__construct();
 
-        $this->register('paths', new Paths);
+        $this->register('php', new ArrayDumper);
+        $this->register('json', new JsonDumper);
     }
 }

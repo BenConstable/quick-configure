@@ -9,9 +9,10 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 use QuickConfigure\Util\Manager as UtilManager;
+use QuickConfigure\Dump\Manager as DumpManager;
 use QuickConfigure\Validation\FormatValidator;
 
-class ShowCommand extends Command {
+class DumpCommand extends Command {
 
     /**
      * Utility manager.
@@ -44,13 +45,40 @@ class ShowCommand extends Command {
         $file = $this->utils->get('paths')->getConfigFileName();
 
         $this
-            ->setName('show')
-            ->setDescription("Show generated config")
+            ->setName('dump')
+            ->setDescription('Dump config to file')
             ->addOption(
                 'env',
                 'e',
                 InputOption::VALUE_REQUIRED,
-                "Show config for given environment. Global by default"
+                'Environment config to dump. Global if excluded'
+            )
+            ->addOption(
+                'path',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Path to dumped file',
+                getcwd()
+            )
+            ->addOption(
+                'name',
+                null,
+                InputOption::VALUE_REQUIRED,
+                'Dumped filename',
+                'dumped_config'
+            )
+            ->addOption(
+                'format',
+                'f',
+                InputOption::VALUE_REQUIRED,
+                'Output format. Either JSON [json] or PHP array [php]',
+                'json'
+            )
+            ->addOption(
+                'stdout',
+                null,
+                InputOption::VALUE_NONE,
+                'Dump output to STDOUT, rather than file'
             )
         ;
     }
@@ -64,8 +92,6 @@ class ShowCommand extends Command {
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('');
-
         $this
             ->utils
             ->get('paths')
@@ -74,6 +100,7 @@ class ShowCommand extends Command {
         $file     = $this->utils->get('paths')->getGeneratedConfigFileName();
         $filePath = $this->utils->get('paths')->getGeneratedConfigDir() . '/' . $file;
         $env      = $input->getOption('env');
+        $manager  = new DumpManager;
 
         if (!file_exists($filePath)) {
             throw new Exception(implode("\n", array(
@@ -87,29 +114,22 @@ class ShowCommand extends Command {
 
         $config = json_decode(file_get_contents($filePath));
 
-        foreach ($config as $key => $value) {
-            $output->writeln("    <comment>" . $this->format($config, $key) . " :</comment> $value");
+        $dumper = $manager->get($input->getOption('format'));
+        $dumped = $dumper->dump($config);
+
+        if ($input->getOption('stdout')) {
+            $output->writeln($dumped);
+        } else {
+            $outputFile =
+                $input->getOption('path') .'/' .
+                $input->getOption('name') . '.' .
+                $dumper->getExtension();
+
+            file_put_contents($outputFile, $dumped);
+
+            $output->writeln('');
+            $output->writeln("    <info>Config dumped to $outputFile</info>");
+            $output->writeln('');
         }
-
-        $output->writeln('');
-    }
-
-    /**
-     * Nicely format keys for console printing.
-     *
-     * @param stdClass $config Config array
-     * @param string   $key    Key to format
-     * @return string Formatted key
-     */
-    private function format($config, $key)
-    {
-        $max    = max(array_map('strlen', array_keys((array) $config)));
-        $append = '';
-
-        if (($diff = $max - strlen($key)) > 0) {
-            $append = str_repeat(' ', $diff);
-        }
-
-        return "[$key]$append";
     }
 }

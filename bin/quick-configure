@@ -5,9 +5,11 @@ include __DIR__ . '/../../../autoload.php';
 
 use QuickConfigure\Command\ConfigureCommand;
 use QuickConfigure\Command\ShowCommand;
+use QuickConfigure\Command\DumpCommand;
 use Symfony\Component\Console\Application;
 
-$application = new Application();
+$application = new Application('QuickConfigure', '1.0.0-alpha1');
 $application->add(new ConfigureCommand);
 $application->add(new ShowCommand);
+$application->add(new DumpCommand);
 $application->run();
