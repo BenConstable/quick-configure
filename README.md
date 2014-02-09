@@ -171,7 +171,7 @@ PSR-0 and PSR-1 with [Laravel's flavour](https://github.com/laravel/framework/bl
 To execute the tests, run:
 
 ```sh
-$ vendor/bin/Behat
+$ vendor/bin/behat
 ```
 
 ###License
