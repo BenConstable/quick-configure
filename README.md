@@ -15,7 +15,7 @@ builds difficult.
 
 QuickConfigure allows you to specify a simple JSON schema from which required
 config can be generated. No manually creating config files, no dirty work tree,
-and a simple script that can be incorporated into your build process. Easy!d
+and a simple script that can be incorporated into your build process. Easy!
 
 ## Installation
 
@@ -24,7 +24,7 @@ QuickConfigure is installed via [Composer](http://getcomposer.org):
 ```json
 {
     "require": {
-        "benconstable/quick-configure": "1.0.0-alpha1"
+        "benconstable/quick-configure": "~1.0"
     }
 }
 ```
