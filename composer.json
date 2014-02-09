@@ -14,12 +14,17 @@
     "license": "MIT",
     "require": {
         "php": ">=5.3.0",
-        "symfony/console": "2.4.*"
+        "symfony/console": "~2.4"
     },
     "autoload": {
         "psr-0": {
             "QuickConfigure": "src/"
         }
     },
-    "bin": ["bin/quick-configure"]
+    "bin": ["bin/quick-configure"],
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0.x-dev"
+        }
+    }
 }
