@@ -1,4 +1,4 @@
-# QuickConfigure
+# QuickConfigure [![Build Status](https://travis-ci.org/BenConstable/quick-configure.png?branch=master)](https://travis-ci.org/BenConstable/quick-configure)
 
 QuickConfigure makes the tedious process of setting configuration options in
 your builds quick and easy (for you and the people using your code!).
@@ -157,3 +157,23 @@ $ vendor/bin/quick-configure
 # Show help for the `configure` command
 $ vendor/bin/quick-configure configure --help
 ```
+
+## Developing & Contributing
+
+Please feel free to fork and contribute to this repository, but do please
+make sure that you:
+
+* Provide tests (using Behat)
+* Ensure you don't break the existing tests
+* Comment your code with PHP docblocs, and stick to the coding style. This is
+PSR-0 and PSR-1 with [Laravel's flavour](https://github.com/laravel/framework/blob/master/CONTRIBUTING.md#coding-guidelines) (I prefer the namespace and class declarations)
+
+To execute the tests, run:
+
+```sh
+$ vendor/bin/Behat
+```
+
+###License
+
+QuickConfigure is open-sourced software licensed under the MIT license
