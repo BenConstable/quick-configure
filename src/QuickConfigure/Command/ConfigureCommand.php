@@ -50,7 +50,8 @@ class ConfigureCommand extends Command {
                 'env',
                 'e',
                 InputOption::VALUE_REQUIRED,
-                "Environment to configure. Global if excluded"
+                "Environment to configure. Global if excluded",
+                ''
             )
             ->addOption(
                 'path',

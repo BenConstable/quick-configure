@@ -50,7 +50,8 @@ class ShowCommand extends Command {
                 'env',
                 'e',
                 InputOption::VALUE_REQUIRED,
-                "Show config for given environment. Global by default"
+                "Show config for given environment. Global by default",
+                ''
             )
         ;
     }

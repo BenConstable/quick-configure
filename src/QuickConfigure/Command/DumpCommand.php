@@ -51,7 +51,8 @@ class DumpCommand extends Command {
                 'env',
                 'e',
                 InputOption::VALUE_REQUIRED,
-                'Environment config to dump. Global if excluded'
+                'Environment config to dump. Global if excluded',
+                ''
             )
             ->addOption(
                 'path',
