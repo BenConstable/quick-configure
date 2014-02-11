@@ -25,11 +25,16 @@ class ConfigureCommand extends Command {
      *
      * Configure utils and delegate to parent.
      *
+     * @param \QuickConfigure\Util\Manager|null Optionally inject UtilManager
      * @return void
      */
-    public function __construct()
+    public function __construct($utilManager = null)
     {
-        $this->utils = new UtilManager;
+        if ($utilManager === null) {
+            $this->utils = new UtilManager;
+        } else {
+            $this->utils = $utilManager;
+        }
 
         parent::__construct();
     }
