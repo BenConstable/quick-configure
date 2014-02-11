@@ -13,14 +13,14 @@ use Assert\Assertion;
 use Symfony\Component\Console\Application,
     Symfony\Component\Console\Tester\CommandTester;
 
-use QuickConfigure\Command\ConfigureCommand;
+use QuickConfigure\Command\ShowCommand;
 use QuickConfigure\Util\Manager,
     QuickConfigure\Util\Paths;
 
 /**
- * Configure feature context.
+ * Show feature context.
  */
-class CommandConfigureContext extends BehatContext
+class CommandShowContext extends BehatContext
 {
     /**
      * @var string
@@ -30,12 +30,17 @@ class CommandConfigureContext extends BehatContext
     /**
      * @var string
      */
-    private $configFilePath;
+    private $env;
 
     /**
      * @var string
      */
-    private $env;
+    private $configFilePath;
+
+    /**
+     * @var stdClass
+     */
+    private $config;
 
     /**
      * Initializes context.
@@ -48,35 +53,38 @@ class CommandConfigureContext extends BehatContext
     }
 
     /**
-     * @Given /^I have a config file at "([^"]*)"$/
+     * @Given /^I have some generated config at "([^"]*)"$/
      */
-    public function iHaveAConfigFileAt($arg1)
+    public function iHaveSomeGeneratedConfigAt($arg1)
     {
         $this->configFilePath = getcwd() . "/{$arg1}/";
 
-        Assertion::file($this->configFilePath . 'quick-configure.json');
+        Assertion::file($this->configFilePath . 'configured.json');
+
+        $this->config = json_decode(file_get_contents($this->configFilePath . 'configured.json'));
+
+        Assertion::isInstanceOf($this->config, 'stdClass');
     }
 
     /**
-     * @When /^I run the Configure command$/
+     * @When /^I run the Show command$/
      */
-    public function iRunTheConfigureCommand()
+    public function iRunTheShowCommand()
     {
+        $pathUtil = new Paths;
+        $pathUtil->setGeneratedConfigDir((dirname(__FILE__) . '/../../data'));
+
+        $manager = new Manager;
+        $manager->register('paths', $pathUtil);
+
         $application = new Application();
-        $application->add(new ConfigureCommand());
+        $application->add(new ShowCommand($manager));
 
-        $command = $application->find('configure');
+        $command = $application->find('show');
         $commandTester = new CommandTester($command);
-
-        $dialog = $command->getHelper('dialog');
-        $dialog->setInputStream($this->getMainContext()->mockInputStream(array(
-            'Config response one',
-            'Config response two'
-        )));
 
         $commandTester->execute(array(
             'command' => $command->getName(),
-            '--path'  => $this->configFilePath,
             '--env'   => $this->env
         ));
 
@@ -84,10 +92,12 @@ class CommandConfigureContext extends BehatContext
     }
 
     /**
-     * @Then /^I should see "([^"]*)"$/
+     * @Then /^I should see that config$/
      */
-    public function iShouldSee($arg1)
+    public function iShouldSeeThatConfig()
     {
-        Assertion::regex($this->output, '/' . preg_quote($arg1) . '/');
+        foreach ((array) $this->config as $key => $value) {
+            Assertion::regex($this->output, '/' . preg_quote("[$key]") . '/');
+        }
     }
 }

@@ -24,6 +24,11 @@ class FeatureContext extends BehatContext
             'commandconfigurecontext',
             new CommandConfigureContext($parameters)
         );
+
+        $this->useContext(
+            'commandshowcontext',
+            new CommandShowContext($parameters)
+        );
     }
 
     /**
@@ -46,5 +51,13 @@ class FeatureContext extends BehatContext
         rewind($stream);
 
         return $stream;
+    }
+
+    /**
+     * @Given /^I set the environment as "([^"]*)"$/
+     */
+    public function iSetTheEnvironmentAs($arg1)
+    {
+        $this->env = $arg1;
     }
 }
