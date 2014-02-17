@@ -24,7 +24,7 @@ QuickConfigure is installed via [Composer](http://getcomposer.org):
 ```json
 {
     "require": {
-        "benconstable/quick-configure": "~1.0"
+        "benconstable/quick-configure": "~0.1"
     }
 }
 ```
@@ -163,7 +163,7 @@ $ vendor/bin/quick-configure configure --help
 Please feel free to fork and contribute to this repository, but do please
 make sure that you:
 
-* Provide tests (using Behat)
+* Provide tests (using [phpspec](http://www.phpspec.net/) and/or [Behat](http://behat.org/))
 * Ensure you don't break the existing tests
 * Comment your code with PHP docblocs, and stick to the coding style. This is
 PSR-0 and PSR-1 with [Laravel's flavour](https://github.com/laravel/framework/blob/master/CONTRIBUTING.md#coding-guidelines) (I prefer the namespace and class declarations)
@@ -174,6 +174,9 @@ To execute the tests, run:
 $ vendor/bin/behat
 ```
 
+I'm currently in the process of finishing off the phpspec tests - they will be
+done soon.
+
 ###License
 
-QuickConfigure is open-sourced software licensed under the MIT license
+QuickConfigure is open-sourced software licensed under the MIT license.
