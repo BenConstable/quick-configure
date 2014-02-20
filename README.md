@@ -1,4 +1,9 @@
-#QuickConfigure [![Build Status](https://travis-ci.org/BenConstable/quick-configure.png?branch=master)](https://travis-ci.org/BenConstable/quick-configure)
+#QuickConfigure
+
+[![Build Status](https://travis-ci.org/BenConstable/quick-configure.png?branch=master)](https://travis-ci.org/BenConstable/quick-configure)
+[![Latest Stable Version](https://poser.pugx.org/benconstable/quick-configure/v/stable.png)](https://packagist.org/packages/benconstable/quick-configure)
+[![Latest Unstable Version](https://poser.pugx.org/benconstable/quick-configure/v/unstable.png)](https://packagist.org/packages/benconstable/quick-configure)
+[![Dependency Status](https://www.versioneye.com/user/projects/53060ac7ec1375a7ee00017b/badge.png)](https://www.versioneye.com/user/projects/53060ac7ec1375a7ee00017b)
 
 QuickConfigure makes the tedious process of setting configuration options in
 your builds quick and easy (for you and the people using your code!).
