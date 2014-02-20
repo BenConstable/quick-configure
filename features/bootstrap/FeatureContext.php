@@ -8,6 +8,8 @@ use Behat\Behat\Context\ClosuredContextInterface,
 use Behat\Gherkin\Node\PyStringNode,
     Behat\Gherkin\Node\TableNode;
 
+use Assert\Assertion;
+
 /**
  * Root features context.
  */
@@ -28,6 +30,11 @@ class FeatureContext extends BehatContext
         $this->useContext(
             'commandshowcontext',
             new CommandShowContext($parameters)
+        );
+
+        $this->useContext(
+            'commanddumpcontext',
+            new CommandDumpContext($parameters)
         );
     }
 
@@ -59,5 +66,19 @@ class FeatureContext extends BehatContext
     public function iSetTheEnvironmentAs($arg1)
     {
         $this->env = $arg1;
+    }
+
+    /**
+     * @Given /^I have some generated config at "([^"]*)"$/
+     */
+    public function iHaveSomeGeneratedConfigAt($arg1)
+    {
+        $this->configFilePath = getcwd() . "/{$arg1}/";
+
+        Assertion::file($this->configFilePath . 'configured.json');
+
+        $this->config = json_decode(file_get_contents($this->configFilePath . 'configured.json'));
+
+        Assertion::isInstanceOf($this->config, 'stdClass');
     }
 }

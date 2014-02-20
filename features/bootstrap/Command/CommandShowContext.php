@@ -53,20 +53,6 @@ class CommandShowContext extends BehatContext
     }
 
     /**
-     * @Given /^I have some generated config at "([^"]*)"$/
-     */
-    public function iHaveSomeGeneratedConfigAt($arg1)
-    {
-        $this->configFilePath = getcwd() . "/{$arg1}/";
-
-        Assertion::file($this->configFilePath . 'configured.json');
-
-        $this->config = json_decode(file_get_contents($this->configFilePath . 'configured.json'));
-
-        Assertion::isInstanceOf($this->config, 'stdClass');
-    }
-
-    /**
      * @When /^I run the Show command$/
      */
     public function iRunTheShowCommand()
