@@ -2,3 +2,4 @@ gen/*
 !gen/.gitkeep
 vendor/*
 features/data/tmp/*
+!features/data/tmp/.gitkeep
